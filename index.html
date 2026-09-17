@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VCF Lookup</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#0d1b2d;--panel2:#12243a;--text:#eaf2ff;--muted:#9fb0c7;--line:#223750;--accent:#61dafb;--good:#5ee18c;--bad:#ff7184;--warn:#ffd166;--shadow:0 20px 60px #0007}*{box-sizing:border-box}body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:radial-gradient(circle at top,#102b49 0,#07111f 45%,#050b14 100%);color:var(--text);min-height:100vh}.wrap{max-width:1180px;margin:auto;padding:42px 20px 70px}.hero{display:flex;align-items:flex-start;justify-content:space-between;gap:24px;margin-bottom:28px}.eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--accent);margin-bottom:10px}.hero h1{font-size:clamp(34px,5vw,58px);line-height:1;margin:0 0 14px}.hero p{margin:0;color:var(--muted);max-width:720px;font-size:16px;line-height:1.65}.badge{border:1px solid #294766;background:#0d1c2f;border-radius:999px;padding:10px 14px;white-space:nowrap;color:#cfe5ff;font-size:13px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.card{background:linear-gradient(180deg,#0f2034e8,#0b1728f2);border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow);padding:22px}.card h2{font-size:18px;margin:0 0 7px}.sub{font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:16px}.drop{border:1px dashed #426483;border-radius:15px;padding:24px;text-align:center;background:#0a1728;cursor:pointer;transition:.2s}.drop:hover,.drop.drag{border-color:var(--accent);background:#0c1d31}.drop strong{display:block;margin-bottom:7px}.drop span{font-size:13px;color:var(--muted)}input[type=file]{display:none}textarea{width:100%;min-height:210px;resize:vertical;background:#081322;border:1px solid var(--line);border-radius:14px;color:var(--text);padding:14px;font:14px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;outline:none}textarea:focus{border-color:#47769b}.controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}button{border:1px solid #34526f;background:#10263e;color:var(--text);padding:10px 15px;border-radius:11px;font-weight:700;cursor:pointer}button.primary{background:var(--accent);border-color:var(--accent);color:#04121d}button:hover{filter:brightness(1.08)}.status{margin-top:14px;padding:12px 14px;background:#091625;border:1px solid var(--line);border-radius:12px;color:#b8c8dc;font-size:13px}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}.stat{background:#0c1929;border:1px solid var(--line);border-radius:14px;padding:15px}.stat b{display:block;font-size:25px;margin-bottom:4px}.stat span{color:var(--muted);font-size:12px}.full{grid-column:1/-1}.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin-bottom:12px}.toolbar .left{display:flex;gap:10px;align-items:center}.search{background:#081322;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;min-width:260px;outline:none}.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px}table{width:100%;border-collapse:collapse;min-width:760px;background:#081322}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid #18283b;font-size:13px;vertical-align:top}th{background:#0d1b2d;color:#aec1d6;position:sticky;top:0}tr:last-child td{border-bottom:0}.yes{color:var(--good);font-weight:800}.no{color:var(--bad);font-weight:800}.note{margin-top:14px;color:var(--muted);font-size:12px;line-height:1.6}.empty{padding:34px;text-align:center;color:var(--muted)}details{margin-top:20px}.steps{color:#bdcce0;line-height:1.8;font-size:14px}.steps code{background:#07111f;border:1px solid #20334b;padding:2px 6px;border-radius:6px}@media(max-width:800px){.grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.hero{display:block}.badge{display:inline-block;margin-top:16px}.search{min-width:160px;width:100%}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<section class="hero">
+<div>
+<div class="eyebrow">Local-first contact intelligence</div>
+<h1>VCF Lookup</h1>
+<p>Load your contacts CSV, paste the phone numbers you want to check, and get normalized Indian-number matches, duplicate detection, and CSV export. Everything runs in your browser.</p>
+</div>
+<div class="badge">100% client-side · no upload</div>
+</section>
+
+<div class="grid">
+<section class="card">
+<h2>1. Load contacts CSV</h2>
+<div class="sub">Works with the CSV exported from your contacts. Phone fields such as <code>Phone 1 - Value</code>, <code>Phone 2 - Value</code>, and <code>Phone 3 - Value</code> are detected automatically.</div>
+<label class="drop" id="drop">
+<strong>Choose CSV or drag it here</strong>
+<span id="fileLabel">No file loaded</span>
+<input id="csvFile" type="file" accept=".csv,text/csv">
+</label>
+<div class="status" id="contactStatus">Load a CSV to build the in-browser contact index.</div>
+</section>
+
+<section class="card">
+<h2>2. Numbers to look up</h2>
+<div class="sub">One number per line, or paste a comma-separated list. Indian formats with +91, 91, or leading 0 are normalized to 10 digits.</div>
+<textarea id="numbers" placeholder="9876543210\n+91 91234 56789\n09988776655"></textarea>
+<div class="controls"><button class="primary" id="lookup">Run lookup</button><button id="clearNumbers">Clear</button></div>
+</section>
+
+<section class="card full" id="resultsCard">
+<div class="toolbar"><div class="left"><div><h2 style="margin:0">Results</h2><div class="sub" style="margin:4px 0 0">Matches and duplicate contact associations.</div></div></div><input class="search" id="filter" placeholder="Filter results..."><button id="download">Download CSV</button></div>
+<div class="stats">
+<div class="stat"><b id="totalStat">0</b><span>Numbers checked</span></div>
+<div class="stat"><b id="matchStat">0</b><span>Matches</span></div>
+<div class="stat"><b id="missStat">0</b><span>Not found</span></div>
+<div class="stat"><b id="dupStat">0</b><span>Duplicate associations</span></div>
+</div>
+<div class="table-wrap"><table><thead><tr><th>Input number</th><th>Normalized</th><th>In Contacts</th><th>Contacts</th><th>Match count</th></tr></thead><tbody id="rows"><tr><td colspan="5" class="empty">Load contacts and run a lookup.</td></tr></tbody></table></div>
+<div class="note">Privacy model: files are read with the browser File API and processed in memory. No contact data or lookup numbers are sent to a backend.</div>
+</section>
+</div>
+
+<details class="card">
+<summary><strong>Deploy this app</strong></summary>
+<div class="steps">
+<p><strong>GitHub Pages:</strong> open repository <code>Settings → Pages</code>, choose <code>Deploy from a branch</code>, select <code>main</code> and <code>/ (root)</code>, then save. GitHub will publish <code>index.html</code>.</p>
+<p><strong>Vercel:</strong> import the repository. No build command is required and the output directory is the repository root.</p>
+<p>Do not commit your personal contacts CSV to the repository. Upload it through the app after the site opens.</p>
+</div>
+</details>
+</div>
+<script>
+let contactIndex=new Map(), lastResults=[];
+const $=id=>document.getElementById(id);
+function parseCSV(text){const rows=[];let row=[],cell='',quoted=false;for(let i=0;i<text.length;i++){const c=text[i];if(quoted){if(c==='"'){if(text[i+1]==='"'){cell+='"';i++}else quoted=false}else cell+=c}else{if(c==='"')quoted=true;else if(c===','){row.push(cell);cell=''}else if(c==='\n'){row.push(cell);rows.push(row);row=[];cell=''}else if(c!=='\r')cell+=c}}if(cell!==''||row.length){row.push(cell);rows.push(row)}return rows}
+function normalize(raw){let s=String(raw??'').trim().replace(/[\s().-]/g,'').replace(/^tel:/i,'');if(!s)return null;if(/^\+91\d{10}$/.test(s))return s.slice(3);if(/^91\d{10}$/.test(s))return s.slice(2);if(/^0\d{10}$/.test(s))return s.slice(1);if(/^\d{10}$/.test(s))return s;return null}
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function readContacts(text){const rows=parseCSV(text);if(!rows.length)throw new Error('CSV is empty');const header=rows[0].map(x=>String(x).trim());const phoneCols=header.map((h,i)=>/phone/i.test(h)&&/value|number|mobile|tel/i.test(h)?i:-1).filter(i=>i>=0);if(!phoneCols.length)throw new Error('No phone columns detected. Expected fields such as Phone 1 - Value.');const nameCols=header.map((h,i)=>/^(name|full name|display name)$/i.test(h)?i:-1).filter(i=>i>=0);const map=new Map();for(let r=1;r<rows.length;r++){const row=rows[r];let name=nameCols.length?row[nameCols[0]]?.trim():'';if(!name){const first=row[header.findIndex(h=>/^first name$/i.test(h))]||'';const last=row[header.findIndex(h=>/^last name$/i.test(h))]||'';name=[first,last].filter(Boolean).join(' ').trim()}if(!name)name='Unnamed contact';for(const idx of phoneCols){const n=normalize(row[idx]);if(n){if(!map.has(n))map.set(n,[]);const names=map.get(n);if(!names.includes(name))names.push(name)}}}return map}
+async function loadFile(file){try{$('fileLabel').textContent=file.name;const text=await file.text();contactIndex=readContacts(text);$('contactStatus').innerHTML='<span class="yes">Loaded '+contactIndex.size.toLocaleString()+' normalized phone numbers.</span>';runLookup()}catch(e){contactIndex=new Map();$('contactStatus').innerHTML='<span class="no">'+escapeHTML(e.message)+'</span>'}}
+function getInputs(){return $('numbers').value.split(/[\n,;]+/).map(x=>x.trim()).filter(Boolean)}
+function runLookup(){const inputs=getInputs();if(!inputs.length||!contactIndex.size){return}lastResults=inputs.map(input=>{const normalized=normalize(input),names=normalized?contactIndex.get(normalized)||[]:[];return{input,normalized:normalized||'',found:names.length>0,names,count:names.length}});render()}
+function render(){const q=$('filter').value.trim().toLowerCase();const visible=lastResults.filter(r=>(r.input+' '+r.normalized+' '+r.names.join(' ')).toLowerCase().includes(q));$('totalStat').textContent=lastResults.length.toLocaleString();$('matchStat').textContent=lastResults.filter(r=>r.found).length.toLocaleString();$('missStat').textContent=lastResults.filter(r=>!r.found).length.toLocaleString();$('dupStat').textContent=lastResults.filter(r=>r.count>1).length.toLocaleString();$('rows').innerHTML=visible.length?visible.map(r=>'<tr><td>'+escapeHTML(r.input)+'</td><td>'+escapeHTML(r.normalized||'Invalid format')+'</td><td class="'+(r.found?'yes':'no')+'">'+(r.found?'YES':'NO')+'</td><td>'+escapeHTML(r.names.join(', ')||'—')+'</td><td>'+r.count+'</td></tr>').join(''):'<tr><td colspan="5" class="empty">No results match the filter.</td></tr>'}
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function download(){if(!lastResults.length)return;const out=['Input Number,Normalized Number,In Contacts,Contact Count,Names',...lastResults.map(r=>[r.input,r.normalized,r.found?'YES':'NO',r.count,r.names.join('; ')].map(csvCell).join(','))].join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([out],{type:'text/csv;charset=utf-8'}));a.download='lookup_report.csv';a.click();URL.revokeObjectURL(a.href)}
+$('drop').addEventListener('click',e=>{if(e.target.tagName!=='INPUT')$('csvFile').click()});$('csvFile').addEventListener('change',e=>{const f=e.target.files[0];if(f)loadFile(f)});['dragenter','dragover'].forEach(ev=>$('drop').addEventListener(ev,e=>{e.preventDefault();$('drop').classList.add('drag')}));['dragleave','drop'].forEach(ev=>$('drop').addEventListener(ev,e=>{$('drop').classList.remove('drag')}));$('drop').addEventListener('drop',e=>{e.preventDefault();const f=e.dataTransfer.files[0];if(f)loadFile(f)});$('lookup').addEventListener('click',runLookup);$('clearNumbers').addEventListener('click',()=>{$('numbers').value='';lastResults=[];render()});$('filter').addEventListener('input',render);$('download').addEventListener('click',download);
+</script>
+</body>
+</html>
